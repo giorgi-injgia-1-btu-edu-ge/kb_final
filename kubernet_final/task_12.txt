@@ -1,0 +1,44 @@
+* kubectl create secret generic app-secret --from-literal=Key3=value1 --namespace=default
+* nano nginx-secret-pod.yaml
+>>>
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx
+  namespace: default
+spec:
+  containers:
+  - name: nginx-container
+    image: nginx:stable
+<<<
+kubectl apply -f nginx-secret-pod.yaml
+
+==========alternative==========
+kuberctl run nginx-secret -n default --image=nginx:stable --dry-run=client -o yaml> sec.yaml
+===============================
+
+
+* nano nginx-secret-pod-with-env.yaml
+>>>
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx
+  namespace: default
+spec:
+  containers:
+  - name: nginx-container
+    image: nginx:stable
+    env:
+    - name: BEST_VARIABLE
+      valueFrom:
+        secretKeyRef:
+          name: app-secret
+          key: Key3
+<<<
+* kubectl apply -f nginx-secret-pod-with-env.yaml --force
+
+
+
+
+

@@ -1,0 +1,9 @@
+* nano /root/Dockerfile
+>>>
+FROM bash:latest
+
+# Run ping command during image build
+RUN ping -c 3 killercoda.com
+<<<
+* docker build -t pinger:3.0 -f /root/Dockerfile /root
+* docker save pinger:3.0 -o /root/pinger3.0.tar

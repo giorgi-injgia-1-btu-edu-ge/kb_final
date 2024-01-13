@@ -1,0 +1,25 @@
+* kubectl create configmap another-config -n btu-final --from-literal=key4=value3
+* kubectl run nginx-configmap -n btu-final --image=nginx --dry-run=client -o yaml > ngin_configmap.yml
+* nano ngin_configmap.yml
+>>> edit file
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: null
+  labels:
+    run: nginx-configmap
+  name: nginx-configmap
+  namespace: btu-final
+spec:
+  containers:
+  - image: nginx
+    name: nginx-container
+    volumeMounts:
+    - name: config-volume
+      mountPath: "/also/a/path"
+  volumes:
+  - name: config-volume
+    configMap:
+      name: another-config
+<<<
+* kubectl apply -f ngin_configmap.yml

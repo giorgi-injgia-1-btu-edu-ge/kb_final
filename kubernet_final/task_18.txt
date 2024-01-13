@@ -1,0 +1,41 @@
+18. 
+1. nano neptune-sa-v2.yaml
+
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: neptune-sa-v2
+  namespace: btu-final
+
+2. nano neptune-deployment.yaml
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: neptune-10ab
+  namespace: btu-final
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: neptune-10ab
+  template:
+    metadata:
+      labels:
+        app: neptune-10ab
+    spec:
+      serviceAccountName: neptune-sa-v2
+      containers:
+      - name: neptune-pod-10ab
+        image: httpd:2.4-alpine
+        resources:
+          requests:
+            memory: "20Mi"
+          limits:
+            memory: "50Mi"
+
+3. kubectl apply -f neptune-sa-v2.yaml
+4. kubectl apply -f neptune-deployment.yaml
+5. k get pods -n btu-final
+6. k get sa -n btu-final
+

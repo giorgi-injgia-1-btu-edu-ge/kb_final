@@ -1,0 +1,72 @@
+* mkdir -p /opt/KDSP00101/data/
+* cd /opt/KDSP00101/data/
+* echo 'Acct=Finance' > index.html
+* nano pv.yml
+>>>
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: task-pv-volume
+spec:
+  capacity:
+    storage: 1Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: exam
+  hostPath:
+    path: /opt/KDSP00101/data
+<<<
+* kubectl apply -f pv.yml
+* nano task-pv.yml
+>>>
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: task-pv-claim
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: exam
+  resources:
+    requests:
+      storage: 100Mi
+<<<
+* kubectl apply -f task-pv.yml
+* nano task-pv-claim.yml
+>>>
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: task-pv-claim
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: exam
+  resources:
+    requests:
+      storage: 100Mi
+<<<
+* kubectl apply -f task-pv-claim.yml
+* nano my-storage-app-pod.yml
+>>>
+apiVersion: v1
+kind: Pod
+metadata:
+  name: my-storage-app-pod
+  labels:
+    app: my-storage-app
+spec:
+  containers:
+  - name: my-storage-app-container
+    image: nginx
+    volumeMounts:
+    - name: storage-volume
+      mountPath: /usr/share/nginx/html
+  volumes:
+  - name: storage-volume
+    persistentVolumeClaim:
+      claimName: task-pv-claim
+<<<
+* kubectl apply -f my-storage-app-pod.yml
